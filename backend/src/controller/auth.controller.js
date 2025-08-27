@@ -4,10 +4,12 @@ const bcrypt = require("bcryptjs")
 
 exports.signup =  async (req,res,next)=>{
     console.log("signup controller running")
-    console.log(req.body)
     try{
         const {fullName,email,password} = req.body;
-        if(password<6){
+        if(!fullName || !email || !password){
+            return res.status(400).json({message : "all Fields is required"});
+        }
+        if(password.length<6){
             return res.status(400).json({message : "Password must be atleast 6 characters"});
         }
 
@@ -44,12 +46,42 @@ exports.signup =  async (req,res,next)=>{
     next();
 }
 
-exports.login = (req,res,next)=>{
-    res.send("login route")
+exports.login = async (req,res,next)=>{
+console.log("login route running")
+    try{
+        const {email,password} = req.body;
+
+        //check user existence in DB
+        const user = await User.findOne({email})
+        if(!user) return res.status(400).json({message : `Invalid Credentials`});
+
+        //check password
+        const isPasswordCorrect = await bcrypt.compare(password,user.password);
+        if(!isPasswordCorrect) return res.status(400).json({message : "Invalid Credentials"});
+
+        //generate token
+        generateToken(user._id,res)
+        res.status(200).json({
+            message: "Succeessfull login!",
+            _id:user._id,
+            fullName: user.fullName,
+            email: user.email,
+            profilePic: user.profilePic       
+        })
+
+    }catch(err){
+        console.log("Error in login controller",err.message)
+        res.status(500).json({message: "Internal Server Error"})
+    }
     next();
 }
 
 exports.logout = (req,res,next)=>{
-    res.send("logout route")
+    try{
+        res.cookie("jwt","",{maxAge:0})
+        res.status(200).json({message: "Logged out successfully"})
+    }catch(err){
+        console.log("error while logging out",err.message)
+    }
     next();
 }
