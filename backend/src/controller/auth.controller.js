@@ -106,3 +106,13 @@ exports.updateProfile = async (req,res,next) => {
     next()
 }
 
+exports.checkAuth = (req,res,next) => {
+    try{
+        res.status(200).json(req.user);
+    }catch(err){
+        console.log("error checking auth",err.message)
+        res.status(500).json({message: "Internal Server Error"})
+    }
+
+    next()
+}

@@ -23,4 +23,5 @@ const userSchema = moongoose.Schema({
 },{timestamps : true}
 );
 
-exports.User = moongoose.model("User",userSchema);
+User = moongoose.model("User",userSchema);
+module.exports = User;
