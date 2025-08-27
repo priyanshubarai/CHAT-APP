@@ -1,6 +1,7 @@
 const { generateToken } = require("../lib/utils");
 const { User } = require("../model/user.model");
 const bcrypt = require("bcryptjs")
+const cloudinary = require("../lib/cloudinary")
 
 exports.signup =  async (req,res,next)=>{
     console.log("signup controller running")
@@ -86,8 +87,22 @@ exports.logout = (req,res,next)=>{
     next();
 }
 
-exports.updateProfile = (req,res,next) => {
-    
+exports.updateProfile = async (req,res,next) => {
+    try{
+        const {profilePic} = req.body;
+        const userId = req.user._id
+
+        if(!profilePic) return res.status(400).json({message: "Profile pic is required"});
+
+        const uploadResponse = await cloudinary.uploader.upload(profilePic)
+        const updatedUser = await User.findByIdAndUpdate(userId,{profilePic:uploadResponse.secure_url},{new:true}) //update and get new user datails
+
+        res.status(200).json(updatedUser)
+
+    }catch(err){
+        console.log("error in updating profile")
+        res.status(500).json({message: "error in updating profile"})
+    }
     next()
 }
 
