@@ -85,3 +85,9 @@ exports.logout = (req,res,next)=>{
     }
     next();
 }
+
+exports.updateProfile = (req,res,next) => {
+    
+    next()
+}
+
