@@ -2,9 +2,11 @@ const { generateToken } = require("../lib/utils");
 const { User } = require("../model/user.model");
 const bcrypt = require("bcryptjs")
 
-exports.signup = async (req,res,next)=>{
-    const {fullName,email,password} = req.body;
+exports.signup =  async (req,res,next)=>{
+    console.log("signup controller running")
+    console.log(req.body)
     try{
+        const {fullName,email,password} = req.body;
         if(password<6){
             return res.status(400).json({message : "Password must be atleast 6 characters"});
         }
