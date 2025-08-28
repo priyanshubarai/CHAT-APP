@@ -1,8 +1,9 @@
 const express = require("express")
 const authRouter = require("./routes/auth.route")
+const messageRouter = require("./routes/message.route");
 const dotenv = require("dotenv");
 const { connetDB } = require("./lib/db");
-const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser");
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ app.use("/",(req,res,next)=>{
 
 //authentication
 app.use("/api/auth",authRouter);
+app.use("/api/message",messageRouter);
 
 const PORT = process.env.PORT;
 app.listen(PORT,()=>{
