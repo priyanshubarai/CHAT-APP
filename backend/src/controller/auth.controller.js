@@ -1,5 +1,5 @@
 const { generateToken } = require("../lib/utils");
-const { User } = require("../model/user.model");
+const User = require("../model/user.model");
 const bcrypt = require("bcryptjs")
 const cloudinary = require("../lib/cloudinary")
 
