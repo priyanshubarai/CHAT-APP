@@ -4,6 +4,7 @@ const messageRouter = require("./routes/message.route");
 const dotenv = require("dotenv");
 const { connetDB } = require("./lib/db");
 const cookieParser = require("cookie-parser");
+const cors = require("cors")
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,10 @@ app.use("/",(req,res,next)=>{
     console.log(req.method,req.url);
     next();
 })
+app.use(cors({
+    origin: "http:localhost:5173",
+    credentials: true,
+}))
 
 //authentication
 app.use("/api/auth",authRouter);
