@@ -48,7 +48,7 @@ exports.signup =  async (req,res,next)=>{
 }
 
 exports.login = async (req,res,next)=>{
-console.log("login route running")
+    console.log("login route running")
     try{
         const {email,password} = req.body;
 
