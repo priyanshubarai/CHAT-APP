@@ -21,7 +21,7 @@ exports.protectRoute = async (req,res,next) => {
 
 
     }catch(err){
-        console.log("error occured in auth")
+        console.log("error occured in auth",err)
         res.status(500).json({message: `internal error :  ${err.message}`})
     }
     next()
