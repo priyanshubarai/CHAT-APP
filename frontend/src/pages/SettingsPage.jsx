@@ -4,6 +4,7 @@ const SettingsPage = () => {
   return (
     <div>
       settings
+      
     </div>
   )
 }
