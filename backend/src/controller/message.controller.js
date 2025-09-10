@@ -4,6 +4,7 @@ const cloudinay = require("cloudinary").v2
 const mongoose = require("mongoose");
 const { io } = require("../lib/socket");
 
+
 exports.getUserForSidebar = async (req,res,next)=>{
     console.log("get user middleware from backend!")
     try{
@@ -66,9 +67,9 @@ exports.sendMessages = async(req,res,next) => {
         await newMessage.save();
         console.log("message saved successfully")
 
-        // Emit the new message to both sender and receiver
-        io.emit("newMessage", newMessage);
+        // Emit the new message
 
+        io.emit("newMessage", newMessage);
         res.status(201).json(newMessage);
 
     } catch (error) {
