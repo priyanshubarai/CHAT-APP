@@ -1,12 +1,14 @@
-const express = require("express")
-const authRouter = require("./routes/auth.route")
-const messageRouter = require("./routes/message.route");
-const dotenv = require("dotenv");
-const { connetDB } = require("./lib/db");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const { app, server } = require("./lib/socket");
-const path  = require("path")   //needed after deploy
+import express from "express";
+import authRouter from "./routes/auth.route.js";
+import messageRouter from "./routes/message.route.js";
+import dotenv from "dotenv";
+import { connetDB } from "./lib/db.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import { app, server } from "./lib/socket.js";
+import path from "path";   // needed after deploy
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 dotenv.config();
 

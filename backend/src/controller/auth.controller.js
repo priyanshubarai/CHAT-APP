@@ -1,9 +1,9 @@
-const { generateToken } = require("../lib/utils");
-const User = require("../model/user.model");
-const bcrypt = require("bcryptjs")
-const cloudinary = require("../lib/cloudinary")
+import { generateToken } from "../lib/utils.js";
+import User from "../model/user.model.js";
+import bcrypt from "bcryptjs";
+import cloudinary from "../lib/cloudinary.js";
 
-exports.signup =  async (req,res,next)=>{
+export const signup =  async (req,res,next)=>{
     console.log("signup controller running")
     try{
         const {fullName,email,password} = req.body;
@@ -47,7 +47,7 @@ exports.signup =  async (req,res,next)=>{
     next();
 }
 
-exports.login = async (req,res,next)=>{
+export const login = async (req,res,next)=>{
     console.log("login route running")
     try{
         const {email,password} = req.body;
@@ -77,7 +77,7 @@ exports.login = async (req,res,next)=>{
     next();
 }
 
-exports.logout = (req,res,next)=>{
+export const logout = (req,res,next)=>{
     try{
         res.cookie("jwt","",{maxAge:0})
         res.status(200).json({message: "Logged out successfully"})
@@ -87,7 +87,7 @@ exports.logout = (req,res,next)=>{
     next();
 }
 
-exports.updateProfile = async (req,res,next) => {
+export const updateProfile = async (req,res,next) => {
     try{
         const {profilePic} = req.body;
         const userId = req.user._id
@@ -106,7 +106,7 @@ exports.updateProfile = async (req,res,next) => {
     next()
 }
 
-exports.checkAuth = (req,res,next) => {
+export const checkAuth = (req,res,next) => {
     try{
         res.status(200).json(req.user);
     }catch(err){

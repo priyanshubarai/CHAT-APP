@@ -1,11 +1,11 @@
-const User = require("../model/user.model")
-const Message = require("../model/message.model")
-const cloudinay = require("cloudinary").v2
-const mongoose = require("mongoose");
-const { io } = require("../lib/socket");
+import User from "../model/user.model.js";
+import Message from "../model/message.model.js";
+import cloudinay from "cloudinary";
+import mongoose from "mongoose";
+import { io } from "../lib/socket.js";
 
 
-exports.getUserForSidebar = async (req,res,next)=>{
+export const getUserForSidebar = async (req,res,next)=>{
     console.log("get user middleware from backend!")
     try{
         const loggedInUserId = req.user._id;
@@ -19,7 +19,7 @@ exports.getUserForSidebar = async (req,res,next)=>{
     }
 }
 
-exports.getMessages = async (req,res,next) => {
+export const getMessages = async (req,res,next) => {
     try{
         const userToChatId = req.params.id;
         const myId = req.user._id;
@@ -43,7 +43,7 @@ exports.getMessages = async (req,res,next) => {
     }
 }
 
-exports.sendMessages = async(req,res,next) => {
+export const sendMessages = async(req,res,next) => {
     console.log("Send Message middleware running:")
     try {
         const {text , image} = req.body;

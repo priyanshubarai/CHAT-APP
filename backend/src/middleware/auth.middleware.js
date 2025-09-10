@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken")
-const User = require("../model/user.model.js")
+import jwt from "jsonwebtoken";
+import User from "../model/user.model.js";
 
 //check for auth
-exports.protectRoute = async (req,res,next) => {
+export const protectRoute = async (req,res,next) => {
     console.log("authetication middleware is running!")
     try{
         const token = req.cookies.jwt;
