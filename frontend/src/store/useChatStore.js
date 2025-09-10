@@ -1,6 +1,7 @@
 import {create} from "zustand"
 import toast from "react-hot-toast"
 import axiosInstance from "../lib/axios"
+import useAuthStore from "./useAuthStore"
 
 const useChatStore = create( (set,get) => ({
     messages : [],
@@ -35,10 +36,20 @@ const useChatStore = create( (set,get) => ({
     sentMessage: async(messageData)=>{
         const {selectedUser,messages} = get();
         try {
-            const res = axiosInstance.post(`/messages/send/${selectedUser._id}`,messageData);
-            set({messages: [...messages,res.data]})
+            const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`,messageData);
+            // Don't add to messages here - let socket.io handle it for real-time updates
+            console.log("Message sent successfully:", res.data);
         } catch (error) {
             toast.error(error.response?.data?.message)
+        }
+    },
+
+    addMessage: (newMessage) => {
+        const {messages} = get();
+        // Check if message already exists to avoid duplicates
+        const messageExists = messages.some(msg => msg._id === newMessage._id);
+        if (!messageExists) {
+            set({messages: [...messages, newMessage]});
         }
     },
 

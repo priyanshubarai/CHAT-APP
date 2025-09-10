@@ -4,10 +4,10 @@ const messageRouter = require("./routes/message.route");
 const dotenv = require("dotenv");
 const { connetDB } = require("./lib/db");
 const cookieParser = require("cookie-parser");
-const cors = require("cors")
+const cors = require("cors");
+const { app, server } = require("./lib/socket");
 
 dotenv.config();
-const app = express();
 
 app.use(express.json({ limit: '10mb' }));  // allow up to 10MB
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
@@ -27,7 +27,7 @@ app.use("/api/auth",authRouter);
 app.use("/api/messages",messageRouter);
 
 const PORT = process.env.PORT;
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     console.log(`RUNNING AT ${PORT}`);
     connetDB();
 })

@@ -1,6 +1,8 @@
 const User = require("../model/user.model")
 const Message = require("../model/message.model")
 const cloudinay = require("cloudinary").v2
+const mongoose = require("mongoose");
+const { io } = require("../lib/socket");
 
 exports.getUserForSidebar = async (req,res,next)=>{
     console.log("get user middleware from backend!")
@@ -14,13 +16,17 @@ exports.getUserForSidebar = async (req,res,next)=>{
         console.log("error in getUserForSidebar",err.message);
         res.status(500).json({message: "Internal Server Error!"})
     }
-    next()
 }
 
 exports.getMessages = async (req,res,next) => {
     try{
         const userToChatId = req.params.id;
         const myId = req.user._id;
+
+        if (!mongoose.Types.ObjectId.isValid(userToChatId)) {
+             return res.status(400).json({ message: "Invalid user ID" });
+        }
+
         const messages = await Message.find({
             $or:[
                 {senderId:myId, receiverId:userToChatId},
@@ -34,7 +40,6 @@ exports.getMessages = async (req,res,next) => {
         console.log("error in getMessages",err.message);
         res.status(500).json({message: "Internal Server Error!"})
     }
-    next()
 }
 
 exports.sendMessages = async(req,res,next) => {
@@ -61,11 +66,13 @@ exports.sendMessages = async(req,res,next) => {
         await newMessage.save();
         console.log("message saved successfully")
 
-        //todo: realtime funtionality socket.io
+        // Emit the new message to both sender and receiver
+        io.emit("newMessage", newMessage);
+
+        res.status(201).json(newMessage);
 
     } catch (error) {
         console.log("error in sendMessage",error.message);
         res.status(500).json({message: "Internal Server Error!"})
     }
-    next()
 }
