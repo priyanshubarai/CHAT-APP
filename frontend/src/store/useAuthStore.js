@@ -8,6 +8,7 @@ const useAuthStore = create((set)=> ({
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
+    onlineUsers: [],
 
     checkAuth: async() => {
         try{
@@ -27,6 +28,7 @@ const useAuthStore = create((set)=> ({
         const res = await axiosInstance.post("/auth/signup",data);
         set({authUser: res.data});
         toast.success("Account created successfully!");
+        console.log("successfull login!")
       } catch (error) {
         console.log("error in signing up :",error);
         toast.error(error.response.data.message);        
@@ -71,7 +73,9 @@ const useAuthStore = create((set)=> ({
             set({isUpdatingProfile: false})
         }
 
-    }
+    },
+
+    
 }))
 
 export default useAuthStore

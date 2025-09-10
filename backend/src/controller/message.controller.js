@@ -3,6 +3,7 @@ const Message = require("../model/message.model")
 const cloudinay = require("cloudinary").v2
 
 exports.getUserForSidebar = async (req,res,next)=>{
+    console.log("get user middleware from backend!")
     try{
         const loggedInUserId = req.user._id;
         const filteredUsers = await User.find({_id: {$ne:loggedInUserId}}).select("-password")  //find other users except ourself and excludes password
@@ -37,6 +38,7 @@ exports.getMessages = async (req,res,next) => {
 }
 
 exports.sendMessages = async(req,res,next) => {
+    console.log("Send Message middleware running:")
     try {
         const {text , image} = req.body;
         const {id: receiverId} = req.params;
@@ -57,11 +59,12 @@ exports.sendMessages = async(req,res,next) => {
         })
 
         await newMessage.save();
+        console.log("message saved successfully")
 
         //todo: realtime funtionality socket.io
 
     } catch (error) {
-        console.log("error in sendMessage",err.message);
+        console.log("error in sendMessage",error.message);
         res.status(500).json({message: "Internal Server Error!"})
     }
     next()

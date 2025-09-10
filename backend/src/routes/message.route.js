@@ -11,8 +11,10 @@ messageRouter.get("",(req,res,next)=>{
 })
 
 messageRouter.get("/users",protectRoute,getUserForSidebar)
+
 messageRouter.get("/:id",protectRoute,getMessages)
-messageRouter.get("/send/:id",protectRoute,sendMessages)
+
+messageRouter.post("/send/:id",protectRoute,sendMessages)
 
 
 

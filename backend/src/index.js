@@ -24,7 +24,7 @@ app.use(cors({
 
 //authentication
 app.use("/api/auth",authRouter);
-app.use("/api/message",messageRouter);
+app.use("/api/messages",messageRouter);
 
 const PORT = process.env.PORT;
 app.listen(PORT,()=>{
