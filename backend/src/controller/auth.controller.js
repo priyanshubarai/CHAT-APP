@@ -94,10 +94,13 @@ export const updateProfile = async (req,res,next) => {
 
         if(!profilePic) return res.status(400).json({message: "Profile pic is required"});
 
-        const uploadResponse = await cloudinary.uploader.upload(profilePic)
-        const updatedUser = await User.findByIdAndUpdate(userId,{profilePic:uploadResponse.secure_url},{new:true}) //update and get new user datails
-
-        res.status(200).json(updatedUser)
+        if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+            const uploadResponse = await cloudinary.uploader.upload(profilePic)
+            const updatedUser = await User.findByIdAndUpdate(userId,{profilePic:uploadResponse.secure_url},{new:true}) //update and get new user datails
+            res.status(200).json(updatedUser)
+        } else {
+            return res.status(500).json({message: "Image upload service not configured"});
+        }
 
     }catch(err){
         console.log("error in updating profile")

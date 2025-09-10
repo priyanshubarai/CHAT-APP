@@ -5,7 +5,7 @@ import { getUserForSidebar, getMessages, sendMessages } from "../controller/mess
 const messageRouter = express.Router();
 
 
-messageRouter.get("",(req,res,next)=>{
+messageRouter.get("/",(req,res,next)=>{
     res.status(200).json({message: "message router is running"})
     next()
 })

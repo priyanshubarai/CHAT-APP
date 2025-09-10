@@ -12,6 +12,15 @@ const __filename = fileURLToPath(import.meta.url);
 
 dotenv.config();
 
+// Validate required environment variables
+const requiredEnvVars = ['MONGO_URI', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+    console.error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
+    process.exit(1);
+}
+
 app.use(express.json({ limit: '10mb' }));  // allow up to 10MB
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser())
@@ -21,7 +30,9 @@ app.use("/",(req,res,next)=>{
     next();
 })
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.NODE_ENV === "production" 
+        ? process.env.FRONTEND_URL || "https://your-frontend-domain.com"
+        : "http://localhost:5173",
     credentials: true,
 }))
 
@@ -30,17 +41,23 @@ app.use("/api/auth",authRouter);
 app.use("/api/messages",messageRouter);
 
 //require after deploy
-const __dirname = path.resolve()    
+const __dirname = path.dirname(__filename);    
 if(process.env.NODE_ENV==="production"){
-    app.use(express.static(path.join(__dirname , ".../frontend/dist")));
+    app.use(express.static(path.join(__dirname , "../frontend/dist")));
 
     app.get("*",(req,res)=>{
         res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
     })
 }
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 7000;
 server.listen(PORT,()=>{
     console.log(`RUNNING AT ${PORT}`);
     connetDB();
 })
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Something went wrong!' });
+});

@@ -53,8 +53,12 @@ export const sendMessages = async(req,res,next) => {
         let imageUrl;
         if(image){
             //upload base64 image to cloudinary
-            const uploadResponse = await cloudinay.uploader.upload(image);
-            imageUrl = uploadResponse.secure_url;
+            if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+                const uploadResponse = await cloudinay.uploader.upload(image);
+                imageUrl = uploadResponse.secure_url;
+            } else {
+                return res.status(500).json({message: "Image upload service not configured"});
+            }
         }
 
         const newMessage = new Message({
