@@ -6,6 +6,7 @@ const { connetDB } = require("./lib/db");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { app, server } = require("./lib/socket");
+const path  = require("path")   //needed after deploy
 
 dotenv.config();
 
@@ -25,6 +26,16 @@ app.use(cors({
 //authentication
 app.use("/api/auth",authRouter);
 app.use("/api/messages",messageRouter);
+
+//require after deploy
+const __dirname = path.resolve()    
+if(process.env.NODE_ENV==="production"){
+    app.use(express.static(path.join(__dirname , ".../frontend/dist")));
+
+    app.get("*",(req,res)=>{
+        res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
+    })
+}
 
 const PORT = process.env.PORT;
 server.listen(PORT,()=>{
