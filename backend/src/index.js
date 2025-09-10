@@ -21,14 +21,12 @@ if (missingEnvVars.length > 0) {
     process.exit(1);
 }
 
+// Middleware setup
 app.use(express.json({ limit: '10mb' }));  // allow up to 10MB
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser())
-// app.use(express.json()) 
-app.use("/",(req,res,next)=>{
-    console.log(req.method,req.url);
-    next();
-})
+
+// CORS configuration
 app.use(cors({
     origin: process.env.NODE_ENV === "production" 
         ? process.env.FRONTEND_URL || "https://your-frontend-domain.com"
@@ -36,18 +34,25 @@ app.use(cors({
     credentials: true,
 }))
 
-//authentication
+// Logging middleware
+app.use((req,res,next)=>{
+    console.log(req.method,req.url);
+    next();
+})
+
+// API routes
 app.use("/api/auth",authRouter);
 app.use("/api/messages",messageRouter);
 
-//require after deploy
+// Static file serving and catch-all for production
 const __dirname = path.dirname(__filename);    
 if(process.env.NODE_ENV==="production"){
     app.use(express.static(path.join(__dirname , "../frontend/dist")));
 
-    app.get("*",(req,res)=>{
-        res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
-    })
+    // Catch-all handler: send back React's index.html file for any non-API routes
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    });
 }
 
 const PORT = process.env.PORT || 7000;
@@ -55,6 +60,11 @@ server.listen(PORT,()=>{
     console.log(`RUNNING AT ${PORT}`);
     connetDB();
 })
+
+// 404 handler for API routes
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ message: 'API endpoint not found' });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
